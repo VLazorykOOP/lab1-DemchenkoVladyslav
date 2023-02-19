@@ -285,7 +285,7 @@ int main()
 		double T, curr_min = 0;//число Т з умови та поточний найменший елемент
 		cin >> T;
 		m = ConsoleInputArray(MAX_SIZE, B);
-		WriteArrayTextFile(m, B, "2.txt");//масив заповнюється випадковими елементами та записується у файл
+		WriteArrayTextFile(m, B, "2.txt");//масив заповнюється введеними елементами та записується у файл
 		cout << endl;
 		for (int i = 0; i < m; i++)
 		{
@@ -319,8 +319,47 @@ int main()
 	}
 	break;
 	case 3:
-
-		break;
+	{int m, n;//розміри масиву
+	cout << "Enter matrix size:" << endl;
+	cin >> m >> n;
+	double** C = new double* [m];//масив для третього завдання
+	double* minimums = new double[m];//масив для найменших елементів кожного рядка
+	cout << endl;	srand(time(NULL));
+	for (int i = 0; i < m; i++)
+	{
+		C[i] = new double[n];		
+		double r1, r2;
+		for (int j = 0; j < n; j++) {
+			r1 = rand();
+			r2 = rand();
+			C[i][j] = 100.0 * r1;
+			C[i][j] = C[i][j] / (1.0 + r2);
+			if (rand() % 2)
+				C[i][j] *= -1;
+			cout << C[i][j] << "   ";
+		}
+		cout << endl;
+	}
+	// розподіляється динамічно пам'ять під двовимірний масив С та додає випадкові елементи		
+	for (int i = 0; i < m; i++)
+	{
+		double curr_min = C[i][0];
+		for (int j = 1; j < n; j++)
+		{
+			if (C[i][j] < curr_min)
+				curr_min = C[i][j];
+		}
+		minimums[i] = curr_min;
+	}//у кожному рядку шукається мінімальний елемент та додається у масив мінімумів
+	double Z = minimums[0];
+	for (int i = 1; i < m; i++)
+	{
+		if (minimums[i] > Z)
+			Z = minimums[i];
+	}//шукається найбільший серед найменших елементів
+	cout << endl << "Z = " << Z << endl;
+	}
+	break;
 	default:
 		break;
 
