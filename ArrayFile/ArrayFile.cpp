@@ -52,8 +52,11 @@ int RndInputArray(int sizeMax, double A[])
 		r2 = rand();
 		A[i] = 100.0 * r1;
 		A[i] = A[i] / (1.0 + r2);
+<<<<<<< HEAD
 		if (rand() % 2)
 			A[i] *= -1;
+=======
+>>>>>>> 9ee1aa04452eae3234b1076dd4e0cbff516eaf3e
 		cout << A[i] << "   ";
 	}
 	return size;
@@ -259,11 +262,21 @@ int main()
 	{
 	case 1:
 	{
+<<<<<<< HEAD
 		double A[MAX_SIZE];//масив для першого завдання
 		int m, minIn;//розмір масиву та індекс мінімального елемента
 		double minEl;//сам мінімальний елемент
 		m = RndInputArray(MAX_SIZE, A);
 		WriteArrayTextFile(m, A, "1.txt");//масив заповнюється випадковими елементами та записується у файл
+=======
+		double A[MAX_SIZE], B[MAX_SIZE], C[MAX_SIZE];
+		int m, minIn;
+		double minEl;
+		m = RndInputArray(MAX_SIZE, A);//sdfsdf
+		WriteArrayTextFile(m, A, "1.txt");
+		for (int i = 0; i < m; i++)
+			cout << A[i] << "   ";
+>>>>>>> 9ee1aa04452eae3234b1076dd4e0cbff516eaf3e
 		minEl = A[0];
 		minIn = 0;
 		for (int i = 0; i < m; i++)
@@ -273,6 +286,7 @@ int main()
 				minEl = A[i];
 				minIn = i;
 			}
+<<<<<<< HEAD
 		}//перебираєтьяс кожен елемент у пошуку найменшого
 		cout << endl << " min element and it`s index:" << minEl << " | " << minIn << endl;
 
@@ -318,13 +332,36 @@ int main()
 		}
 	}
 	break;
+=======
+		}
+		cout << endl << " min element and it`s index:" << minEl << " | " << minIn << endl;
+		/*m = ReadArrayBinFile(MAX_SIZE, C, "1.bin");
+		cout << " \n m= " << m << endl;
+		for (int i = 0; i < m; i++)
+			cout << C[i] << "   ";*/
+			//cout << "\n  Vector \n";
+			//vector<double> vA;
+			//ConsoleInputVector(MAX_SIZE, vA);
+			//for (auto v : vA) {
+			//	cout << v << "   ";
+			//}
+			//TaskV();
+	}
+	break;
+	case 2:
+
+		break;
+>>>>>>> 9ee1aa04452eae3234b1076dd4e0cbff516eaf3e
 	case 3:
 
 		break;
 	default:
 		break;
 	}
+<<<<<<< HEAD
 	}
+=======
+>>>>>>> 9ee1aa04452eae3234b1076dd4e0cbff516eaf3e
 	//TaskV();
 	return 1;
 
