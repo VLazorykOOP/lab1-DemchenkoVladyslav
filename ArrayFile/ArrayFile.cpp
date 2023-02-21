@@ -15,6 +15,8 @@ typedef double* pDouble;
 *   ConsoleInputArrayDouble
 *
 */
+
+const int MAX_SIZE = 560;
 int ConsoleInputSizeArray(const int sizeMax)
 {
 	int size = 0;
@@ -86,7 +88,7 @@ void ConsoleInputVector(int sizeMax, vector<double>& A)
 	int size = ConsoleInputSizeArray(sizeMax);
 	double d;
 	for (int i = 0; i < size; i++) {
-		cout << " Array[ " << i << "] "; cin >> d; A.push_back(d);
+		cout << " Vector[ " << i << "] "; cin >> d; A.push_back(d);
 	}
 	return;
 }
@@ -127,6 +129,36 @@ int ReadArrayTextFile(int n, double* arr, const char* fileName)
 
 }
 
+void WriteVectorTextFile(vector<double> v, const char* fileName)
+{
+	ofstream fout(fileName);
+	if (fout.fail()) return;
+	fout << v.size() << endl;
+	for (int i = 0; i < v.size(); i++)
+		fout << v[i] << "   ";
+	fout.close(); //
+}
+/*
+*  ReadArrayTextFile
+*
+*/
+
+
+void WriteVectorTextFile(vector<double> v, const char* fileName)
+{
+	ifstream fin(fileName);
+	if (fin.fail()) return;
+	int n;
+	double d;
+	fin >> n;
+	for (int i = 0; i < n; i++)
+	{
+		fin >> d;
+		v.push_back(d);
+	}
+	fin.close(); //
+}
+
 
 void WriteArrayBinFile(int n, double* arr, const char* fileName)
 {
@@ -161,165 +193,73 @@ void ShowMainMenu()
 	cout << "    3.  Task 3  \n";
 }
 
-void MenuTask()
+void Task1()
 {
-	cout << "     Menu Task   \n";
-	cout << "    1.  Local array  \n";
-	cout << "    2.  Dynamic array 1 \n";
-	cout << "    3.  Dynamic array 2  new \n";
-	cout << "    4.  Dynamic array : vector \n";
-	cout << "    5.  Exit \n";
-}
+	double A[MAX_SIZE];//масив для першого завдання
+	int m, minIn;//розмір масиву та індекс мінімального елемента
+	double minEl;//сам мінімальний елемент
+	m = RndInputArray(MAX_SIZE, A);
+	WriteArrayTextFile(m, A, "1.txt");//масив заповнюється випадковими елементами та записується у файл		
+	for (int i = 0; i < m; i++)
+		cout << A[i] << "   ";
+	minEl = A[0];
+	minIn = 0;
+	for (int i = 0; i < m; i++)
+	{
+		if (minEl > A[i])
+		{
+			minEl = A[i];
+			minIn = i;
+		}
+	}//перебираєтьяс кожен елемент у пошуку найменшого
+	cout << endl << " min element and it`s index:" << minEl << " | " << minIn << endl;
 
-void MenuInput()
+}
+void Task2()
 {
-	cout << "     Menu Input   \n";
-	cout << "    1.  Console all \n";
-	cout << "    2.  Console - size, array - random \n";
-	cout << "    3.  File 1.txt \n";
-	cout << "    4.  bb    \n";
-	cout << "    5.  Exit \n";
-}
-
-
-/*
-* Задано одновимірний масив А розміру 2N.
-* Побудувати два масиви В і С розміру N,
-* включивши  у масив В елементи масиву А з парними індексами,
-* а у С - з непарними.
-*****************
-*  A - in
-*  B, C - out
-*/
-void  TestVariant(int N, double* A, double* B, double* C) {
-	for (int i = 0; i < N; i++) {
-		B[i] = A[2 * i];
-		C[i] = A[2 * i + 1];
+	double B[MAX_SIZE];//масив для другого завдання
+	int m, findIndex = -1, firstIndex = -1;//розмір масиву, номер найменшого елемента з умови, номер першого числа, яке більше за Т
+	cout << endl << "Enter the T number" << endl;
+	double T, curr_min = 0;//число Т з умови та поточний найменший елемент
+	cin >> T;
+	m = ConsoleInputArray(MAX_SIZE, B);
+	WriteArrayTextFile(m, B, "2.txt");//масив заповнюється введеними елементами та записується у файл
+	cout << endl;
+	for (int i = 0; i < m; i++)
+	{
+		if (T < B[i])
+		{
+			firstIndex = i;
+			break;
+		}
+	}// шукається номер першого числа, яке більше за Т
+	if (firstIndex != -1)
+	{
+		curr_min = LLONG_MIN;
+		for (int i = 0; i < firstIndex; i++)
+		{
+			if (B[i] < 0 && B[i] > curr_min)
+			{
+				findIndex = i;
+				curr_min = B[i];
+			}
+		}// шукається потрібний елемент з умови та його індекс
+		if (findIndex == -1)
+		{
+			cout << "No needed elements found" << endl;
+			return;
+		}
+		cout << "Needed element and it`s index: " << curr_min << " | " << findIndex << endl;
+	}
+	else
+	{
+		cout << "No elements bigger than T found" << endl;
+		return;
 	}
 }
-/*
-*  Task  Var
-*
-*
-*/
-void TaskV()
+void Task3()
 {
-	char ch = '5';
-	do {
-		system("cls");
-		MenuTask();
-		ch = getchar();
-		getchar();
-		switch (ch) {
-		case '1': cout << " 1 "; break;
-		case '2': cout << " 2 "; break;
-			//
-		case '5': return;
-		}
-		cout << " Press any key and enter\n";
-		ch = getchar();
-	} while (ch != 27);
-
-}
-
-void ArrayLocal()
-{
-	double A[1000], B[500], C[500];
-	int n;
-	char ch = '5';
-	do {
-		system("cls");
-		MenuTask();
-		ch = getchar();
-		getchar();
-		switch (ch) {
-		case '1': cout << " 1 "; break;
-		case '2': cout << " 2 "; break;
-			//
-		case '5': return;
-		}
-		cout << " Press any key and enter\n";
-		ch = getchar();
-	} while (ch != 27);
-
-}
-
-
-int main()
-{
-	const int MAX_SIZE = 560;
-	std::cout << "Hello World!\n";
-	ShowMainMenu();
-	int v;
-	cin >> v;
-	switch (v)
-	{
-	case 1:
-	{
-		double A[MAX_SIZE];//масив для першого завдання
-		int m, minIn;//розмір масиву та індекс мінімального елемента
-		double minEl;//сам мінімальний елемент
-		m = RndInputArray(MAX_SIZE, A);
-		WriteArrayTextFile(m, A, "1.txt");//масив заповнюється випадковими елементами та записується у файл		
-		for (int i = 0; i < m; i++)
-			cout << A[i] << "   ";
-		minEl = A[0];
-		minIn = 0;
-		for (int i = 0; i < m; i++)
-		{
-			if (minEl > A[i])
-			{
-				minEl = A[i];
-				minIn = i;
-			}
-		}//перебираєтьяс кожен елемент у пошуку найменшого
-		cout << endl << " min element and it`s index:" << minEl << " | " << minIn << endl;
-
-	}
-	break;
-	case 2:
-	{
-		double B[MAX_SIZE];//масив для другого завдання
-		int m, findIndex = -1, firstIndex = -1;//розмір масиву, номер найменшого елемента з умови, номер першого числа, яке більше за Т
-		cout << endl << "Enter the T number" << endl;
-		double T, curr_min = 0;//число Т з умови та поточний найменший елемент
-		cin >> T;
-		m = ConsoleInputArray(MAX_SIZE, B);
-		WriteArrayTextFile(m, B, "2.txt");//масив заповнюється введеними елементами та записується у файл
-		cout << endl;
-		for (int i = 0; i < m; i++)
-		{
-			if (T < B[i])
-			{
-				firstIndex = i;
-				break;
-			}
-		}// шукається номер першого числа, яке більше за Т
-		if (firstIndex != -1)
-		{
-			curr_min = LLONG_MIN;
-			for (int i = 0; i < firstIndex; i++)
-			{
-				if (B[i] < 0 && B[i] > curr_min)
-				{
-					findIndex = i;
-					curr_min = B[i];
-				}
-			}// шукається потрібний елемент з умови та його індекс
-			if (findIndex == -1)
-			{
-				return cout << "No needed elements found" << endl, 0;
-			}
-			cout << "Needed element and it`s index: " << curr_min << " | " << findIndex << endl;
-		}
-		else
-		{
-			return cout << "No elements bigger than T found" << endl, 0;
-		}
-	}
-	break;
-	case 3:
-	{int m, n;//розміри масиву
+	int m, n;//розміри масиву
 	cout << "Enter matrix size:" << endl;
 	cin >> m >> n;
 	double** C = new double* [m];//масив для третього завдання
@@ -327,7 +267,7 @@ int main()
 	cout << endl;	srand(time(NULL));
 	for (int i = 0; i < m; i++)
 	{
-		C[i] = new double[n];		
+		C[i] = new double[n];
 		double r1, r2;
 		for (int j = 0; j < n; j++) {
 			r1 = rand();
@@ -358,13 +298,33 @@ int main()
 			Z = minimums[i];
 	}//шукається найбільший серед найменших елементів
 	cout << endl << "Z = " << Z << endl;
+}
+int main()
+{
+	std::cout << "Hello World!\n";
+	ShowMainMenu();
+	int v;
+	cin >> v;
+	switch (v)
+	{
+	case 1:
+	{
+		Task1();
+	}
+	break;
+	case 2:
+	{
+		Task2();
+	}
+	break;
+	case 3:
+	{
+		Task3();
 	}
 	break;
 	default:
 		break;
-
-
-	}//TaskV();
+	}
 	return 1;
 }
 
