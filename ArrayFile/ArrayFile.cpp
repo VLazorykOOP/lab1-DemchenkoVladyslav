@@ -15,7 +15,11 @@ typedef double* pDouble;
 *   ConsoleInputArrayDouble
 *
 */
-
+struct matrixSize
+{
+	int m;
+	int n;
+};
 const int MAX_SIZE = 560;
 int ConsoleInputSizeArray(const int sizeMax)
 {
@@ -60,7 +64,25 @@ int RndInputArray(int sizeMax, double A[])
 	}
 	return size;
 }
-
+void RndInputMatrix(int m, int n, double* C[])
+{
+	int r1 = 0, r2 = 0;
+	srand(time(NULL));
+	for (int i = 0; i < m; i++) {
+		C[i] = new double[n];
+		double r1, r2;
+		for (int j = 0; j < n; j++) {
+			r1 = rand();
+			r2 = rand();
+			C[i][j] = 100.0 * r1;
+			C[i][j] = C[i][j] / (1.0 + r2);
+			if (rand() % 2)
+				C[i][j] *= -1;
+			cout << C[i][j] << "   ";
+		}
+		cout << endl;
+	}
+}
 int ConsoleInputDynamicArrayNew(int sizeMax, pDouble& pA)
 {
 	int size = ConsoleInputSizeArray(sizeMax);
@@ -102,10 +124,12 @@ void ConsoleInputVector(int sizeMax, vector<double>& A)
 void WriteArrayTextFile(int n, double* arr, const char* fileName)
 {
 	ofstream fout(fileName);
+	if (!fout.is_open()) return;
 	if (fout.fail()) return;
 	fout << n << endl;
 	for (int i = 0; i < n; i++)
 		fout << arr[i] << "   ";
+	cout << endl;
 	fout.close(); //
 }
 /*
@@ -121,21 +145,31 @@ int ReadArrayTextFile(int n, double* arr, const char* fileName)
 	if (fin.fail()) return 0;
 	fin >> size;
 	if (size <= 0) return 0;
-	if (size > n) size = n;
-	for (int i = 0; i < n; i++)
-		fin >> arr[i];
+	if (size > n)
+	{
+		size = n;
+	}
+	double d;
+	for (int i = 0; i < size; i++)
+	{
+		fin >> d;
+		arr[i] = d;
+	}
 	fin.close();
 	return size;
-
 }
-
-void WriteVectorTextFile(vector<double> v, const char* fileName)
+void WriteMatrixTextFile(int m, int n, double* arr[], const char* fileName, double Z)
 {
 	ofstream fout(fileName);
+	if (!fout.is_open()) return;
 	if (fout.fail()) return;
-	fout << v.size() << endl;
-	for (int i = 0; i < v.size(); i++)
-		fout << v[i] << "   ";
+	fout << n << endl;
+	for (int i = 0; i < m; i++)
+	{
+		for (int j = 0; j < n; j++)
+			fout << arr[i][j] << "   ";
+	}
+	fout << endl << Z;
 	fout.close(); //
 }
 /*
@@ -144,7 +178,41 @@ void WriteVectorTextFile(vector<double> v, const char* fileName)
 */
 
 
+matrixSize ReadMatrixTextFile(int m, int n, double* arr[], const char* fileName)
+{
+	ifstream fin(fileName);
+	if (fin.fail()) return { 0,0 };
+	fin >> m >> n;
+	if (m <= 0 || n <= 0) return { 0,0 };
+	double d;
+	for (int i = 0; i < m; i++)
+	{
+		for (int j = 0; j < n; j++)
+		{
+			fin >> d;
+			arr[i][j] = d;
+		}
+	}
+	fin.close();
+	return { m,n };
+}
 void WriteVectorTextFile(vector<double> v, const char* fileName)
+{
+	ofstream fout(fileName);
+	if (fout.fail()) return;
+	fout << v.size() << endl;
+	for (int i = 0; i < v.size(); i++)
+		fout << v[i] << "   ";
+	cout << endl;
+	fout.close(); //
+}
+/*
+*  ReadArrayTextFile
+*
+*/
+
+
+void ReadVectorTextFile(vector<double> v, const char* fileName)
 {
 	ifstream fin(fileName);
 	if (fin.fail()) return;
@@ -195,20 +263,30 @@ void ShowMainMenu()
 
 void Task1()
 {
-	double A[MAX_SIZE];//масив для першого завдання
-	int m, minIn;//розмір масиву та індекс мінімального елемента
-	double minEl;//сам мінімальний елемент
-	m = RndInputArray(MAX_SIZE, A);
-	WriteArrayTextFile(m, A, "1.txt");//масив заповнюється випадковими елементами та записується у файл		
-	for (int i = 0; i < m; i++)
-		cout << A[i] << "   ";
-	minEl = A[0];
+	double A[MAX_SIZE], B[MAX_SIZE];//масиви для першого завдання
+	int m = 0, minIn;//розмір масиву та індекс мінімального елемента
+	double minEl;//сам мінімальний елемент	
+	ReadArrayTextFile(m, B, "1Read.txt");
+	if (m == 0)
+	{
+		ReadArrayBinFile(m, B, "1Read.bin");
+		if (m == 0)
+		{
+			m = RndInputArray(MAX_SIZE, A);
+			WriteArrayBinFile(m, A, "1Write.bin");
+			WriteArrayTextFile(m, A, "1Write.txt");//у випадку, якщо масив не зчитається, то він заповнюється випадковими елементами та записується у бінарний та текстовий файли
+			WriteArrayBinFile(m, A, "1Read.bin");
+			WriteArrayTextFile(m, A, "1Read.txt");
+		}
+	}
+	ReadArrayTextFile(m, B, "1Read.txt");
+	minEl = B[0];
 	minIn = 0;
 	for (int i = 0; i < m; i++)
 	{
-		if (minEl > A[i])
+		if (minEl > B[i])
 		{
-			minEl = A[i];
+			minEl = B[i];
 			minIn = i;
 		}
 	}//перебираєтьяс кожен елемент у пошуку найменшого
@@ -217,13 +295,21 @@ void Task1()
 }
 void Task2()
 {
-	double B[MAX_SIZE];//масив для другого завдання
-	int m, findIndex = -1, firstIndex = -1;//розмір масиву, номер найменшого елемента з умови, номер першого числа, яке більше за Т
+	double A[MAX_SIZE], B[MAX_SIZE];//масиви для другого завдання
+	int m = 0, findIndex = -1, firstIndex = -1;//розмір масиву, номер найменшого елемента з умови, номер першого числа, яке більше за Т
 	cout << endl << "Enter the T number" << endl;
 	double T, curr_min = 0;//число Т з умови та поточний найменший елемент
 	cin >> T;
-	m = ConsoleInputArray(MAX_SIZE, B);
-	WriteArrayTextFile(m, B, "2.txt");//масив заповнюється введеними елементами та записується у файл
+	ReadArrayTextFile(m, B, "1Read.txt");
+	if (m == 0)
+	{
+		m = RndInputArray(MAX_SIZE, A);
+		WriteArrayBinFile(m, A, "2Write.bin");
+		WriteArrayTextFile(m, A, "2Write.txt");//у випадку, якщо масив не зчитається, то він заповнюється випадковими елементами та записується у бінарний та текстовий файли
+		WriteArrayBinFile(m, A, "2Read.bin");
+		WriteArrayTextFile(m, A, "2Read.txt");
+	}
+	ReadArrayTextFile(m, B, "2Read.txt");
 	cout << endl;
 	for (int i = 0; i < m; i++)
 	{
@@ -259,26 +345,22 @@ void Task2()
 }
 void Task3()
 {
-	int m, n;//розміри масиву
-	cout << "Enter matrix size:" << endl;
-	cin >> m >> n;
+	int m = 0, n = 0;//розміри масиву	
 	double** C = new double* [m];//масив для третього завдання
 	double* minimums = new double[m];//масив для найменших елементів кожного рядка
-	cout << endl;	srand(time(NULL));
-	for (int i = 0; i < m; i++)
+	cout << endl;
+	srand(time(NULL));
+	matrixSize mS = ReadMatrixTextFile(m, n, C, "3Read.txt");
+	m = mS.m;
+	n = mS.n;
+	if (m == 0 || n == 0)
 	{
-		C[i] = new double[n];
-		double r1, r2;
-		for (int j = 0; j < n; j++) {
-			r1 = rand();
-			r2 = rand();
-			C[i][j] = 100.0 * r1;
-			C[i][j] = C[i][j] / (1.0 + r2);
-			if (rand() % 2)
-				C[i][j] *= -1;
-			cout << C[i][j] << "   ";
-		}
-		cout << endl;
+		cout << "Error in file reading" << endl;
+		cout << "Enter matrix size:" << endl;
+		do {
+			cin >> m >> n;
+		} while (m <= 0 || n <= 0);
+		RndInputMatrix(m, n, C);
 	}
 	// розподіляється динамічно пам'ять під двовимірний масив С та додає випадкові елементи		
 	for (int i = 0; i < m; i++)
@@ -297,14 +379,17 @@ void Task3()
 		if (minimums[i] > Z)
 			Z = minimums[i];
 	}//шукається найбільший серед найменших елементів
+	WriteMatrixTextFile(m, n, C, "3Write.txt", Z);
 	cout << endl << "Z = " << Z << endl;
 }
 int main()
 {
-	std::cout << "Hello World!\n";
 	ShowMainMenu();
 	int v;
-	cin >> v;
+	do {
+		cin >> v;
+	} while (v < 1 || v>3);
+	system("CLS");
 	switch (v)
 	{
 	case 1:
