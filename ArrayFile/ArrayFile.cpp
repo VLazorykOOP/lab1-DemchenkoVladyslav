@@ -20,6 +20,7 @@ struct matrixSize
 	int m;
 	int n;
 };
+char buffer[30];
 const int MAX_SIZE = 560;
 int ConsoleInputSizeArray(const int sizeMax)
 {
@@ -158,7 +159,7 @@ int ReadArrayTextFile(int n, double* arr, const char* fileName)
 	fin.close();
 	return size;
 }
-void WriteMatrixTextFile(int m, int n, double* arr[], const char* fileName, double Z)
+void WriteMatrixTextFile(int m, int n, double* arr[], const char* fileName)
 {
 	ofstream fout(fileName);
 	if (!fout.is_open()) return;
@@ -169,7 +170,6 @@ void WriteMatrixTextFile(int m, int n, double* arr[], const char* fileName, doub
 		for (int j = 0; j < n; j++)
 			fout << arr[i][j] << "   ";
 	}
-	fout << endl << Z;
 	fout.close(); //
 }
 /*
@@ -252,7 +252,22 @@ int ReadArrayBinFile(int n, double* arr, const char* fileName)
 	// ssdhs
 	return size;
 }
-
+void WriteAnswerBinFile(double answer, const char* fileName)
+{
+	//ios_base
+	ofstream bfout(fileName, ios_base::binary);
+	if (bfout.fail()) return;
+	bfout.write((const char*)&answer, sizeof(double));
+	bfout.close();
+}
+void WriteAnswerTextFile(double answer, const char* fileName)
+{
+	ofstream fout(fileName);
+	if (!fout.is_open()) return;
+	if (fout.fail()) return;
+	fout << answer;
+	fout.close(); //
+}
 void ShowMainMenu()
 {
 	cout << "    Main Menu  \n";
@@ -289,7 +304,9 @@ void Task1()
 			minEl = B[i];
 			minIn = i;
 		}
-	}//перебираєтьяс кожен елемент у пошуку найменшого
+	}//перебирається кожен елемент у пошуку найменшого
+	WriteAnswerBinFile(minEl, "1Answer.bin");
+	WriteAnswerTextFile(minEl, "1Answer.txt");
 	cout << endl << " min element and it`s index:" << minEl << " | " << minIn << endl;
 
 }
@@ -335,6 +352,8 @@ void Task2()
 			cout << "No needed elements found" << endl;
 			return;
 		}
+		WriteAnswerBinFile(curr_min, "2Answer.bin");
+		WriteAnswerTextFile(curr_min, "2Answer.txt");
 		cout << "Needed element and it`s index: " << curr_min << " | " << findIndex << endl;
 	}
 	else
@@ -379,7 +398,9 @@ void Task3()
 		if (minimums[i] > Z)
 			Z = minimums[i];
 	}//шукається найбільший серед найменших елементів
-	WriteMatrixTextFile(m, n, C, "3Write.txt", Z);
+	WriteMatrixTextFile(m, n, C, "3Write.txt");
+	WriteAnswerBinFile(Z, "3Answer.bin");
+	WriteAnswerTextFile(Z, "3Answer.txt");
 	cout << endl << "Z = " << Z << endl;
 }
 int main()
