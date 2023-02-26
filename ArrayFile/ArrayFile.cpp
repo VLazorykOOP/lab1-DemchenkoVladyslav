@@ -291,9 +291,9 @@ void Task1()
 			WriteArrayTextFile(m, A, "1Write.txt");//у випадку, якщо масив не зчитається, то він заповнюється випадковими елементами та записується у бінарний та текстовий файли
 			WriteArrayBinFile(m, A, "1Read.bin");
 			WriteArrayTextFile(m, A, "1Read.txt");
+			ReadArrayTextFile(m, B, "1Read.txt");
 		}
 	}
-	ReadArrayTextFile(m, B, "1Read.txt");
 	minEl = B[0];
 	minIn = 0;
 	for (int i = 0; i < m; i++)
@@ -314,7 +314,7 @@ void Task2()
 	double A[MAX_SIZE], B[MAX_SIZE];//масиви для другого завдання
 	int m = 0, findIndex = -1, firstIndex = -1;//розмір масиву, номер найменшого елемента з умови, номер першого числа, яке більше за Т
 	cout << endl << "Enter the T number" << endl;
-	double T, curr_min = 0;//число Т з умови та поточний найменший елемент
+	double T, curr_max = 0;//число Т з умови та поточний найменший елемент
 	cin >> T;
 	ReadArrayTextFile(m, B, "1Read.txt");
 	if (m == 0)
@@ -324,8 +324,8 @@ void Task2()
 		WriteArrayTextFile(m, A, "2Write.txt");//у випадку, якщо масив не зчитається, то він заповнюється випадковими елементами та записується у бінарний та текстовий файли
 		WriteArrayBinFile(m, A, "2Read.bin");
 		WriteArrayTextFile(m, A, "2Read.txt");
+		ReadArrayTextFile(m, B, "2Read.txt");
 	}
-	ReadArrayTextFile(m, B, "2Read.txt");
 	cout << endl;
 	for (int i = 0; i < m; i++)
 	{
@@ -337,13 +337,13 @@ void Task2()
 	}// шукається номер першого числа, яке більше за Т
 	if (firstIndex != -1)
 	{
-		curr_min = LLONG_MIN;
+		curr_max = LLONG_MIN;
 		for (int i = 0; i < firstIndex; i++)
 		{
-			if (*(B + i) < 0 && *(B + i) > curr_min)
+			if (*(B + i) < 0 && *(B + i) > curr_max)
 			{
 				findIndex = i;
-				curr_min = *(B + i);
+				curr_max = *(B + i);
 			}
 		}// шукається потрібний елемент з умови та його індекс
 		if (findIndex == -1)
@@ -351,9 +351,9 @@ void Task2()
 			cout << "No needed elements found" << endl;
 			return;
 		}
-		WriteAnswerBinFile(curr_min, "2Answer.bin");
-		WriteAnswerTextFile(curr_min, "2Answer.txt");
-		cout << "Needed element and it`s index: " << curr_min << " | " << findIndex << endl;
+		WriteAnswerBinFile(curr_max, "2Answer.bin");
+		WriteAnswerTextFile(curr_max, "2Answer.txt");
+		cout << "Needed element and it`s index: " << curr_max << " | " << findIndex << endl;
 	}
 	else
 	{
