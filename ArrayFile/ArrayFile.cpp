@@ -5,7 +5,6 @@
 #include <fstream>
 #include <ios>
 #include <vector>
-
 #include <time.h>
 
 using namespace std;
@@ -305,9 +304,9 @@ void Task1()
 			minIn = i;
 		}
 	}//перебирається кожен елемент у пошуку найменшого
+	cout << endl << " min element and it`s index:" << minEl << " | " << minIn << endl;
 	WriteAnswerBinFile(minEl, "1Answer.bin");
 	WriteAnswerTextFile(minEl, "1Answer.txt");
-	cout << endl << " min element and it`s index:" << minEl << " | " << minIn << endl;
 
 }
 void Task2()
@@ -330,7 +329,7 @@ void Task2()
 	cout << endl;
 	for (int i = 0; i < m; i++)
 	{
-		if (T < B[i])
+		if (T < *(B + i))
 		{
 			firstIndex = i;
 			break;
@@ -341,10 +340,10 @@ void Task2()
 		curr_min = LLONG_MIN;
 		for (int i = 0; i < firstIndex; i++)
 		{
-			if (B[i] < 0 && B[i] > curr_min)
+			if (*(B + i) < 0 && *(B + i) > curr_min)
 			{
 				findIndex = i;
-				curr_min = B[i];
+				curr_min = *(B + i);
 			}
 		}// шукається потрібний елемент з умови та його індекс
 		if (findIndex == -1)
@@ -409,7 +408,7 @@ int main()
 	int v;
 	do {
 		cin >> v;
-	} while (v < 1 || v>3);
+	} while (v < 1 || v > 3);
 	system("CLS");
 	switch (v)
 	{
